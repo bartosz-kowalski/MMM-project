@@ -1,12 +1,29 @@
 #include <string.h>
 #include <fstream>
+#include <math.h>
 
 #define g 9.8145
+#define h 8000
 
-double f_rk(double v, double m, double b)
+int sgn(double v)
 {
-    double v_n=-g+b*v/m;
+    if(v<0)
+        return -1;
+    else if(v==0)
+        return 0;
+    else
+        return 1;
+}
+
+double f_rk(double v, const double m, double& b)
+{
+    double v_n=-g-b*v/m*sgn(v);
     return v_n;
+}
+
+void b_increase(double& b, const double y)
+{
+    b*=exp(-y/h);
 }
 
 int main(int argc, char** argv)
@@ -15,14 +32,14 @@ int main(int argc, char** argv)
     wyniki.open("wyniki.csv",std::fstream::out);
     printf("%s",argv[0]);
     const double m = atof(argv[1]);
-    const double b = atof(argv[2]);
+    double b = atof(argv[2]);
     const double y0 = atof(argv[3]);
     const double H = atof(argv[4]);
-    //const double v0 = atof(argv[5]);
+    const double v0 = atof(argv[5]);
     
     int i=0;
     double y=y0;
-    double v=0;
+    double v=v0;
     double t=0;
 
     double k1_v=0, k2_v=0, k3_v=0, k4_v=0;
@@ -30,7 +47,6 @@ int main(int argc, char** argv)
 
     do
     {
-
         k1_y=H*v;
         k1_v=H*f_rk(v,m,b);
 
@@ -46,8 +62,9 @@ int main(int argc, char** argv)
         y+=(k1_y+2*k2_y+2*k3_y+k4_y)/6;
         v+=(k1_v+2*k2_v+2*k3_v+k4_v)/6;
         if (y<0) y=0;
-        wyniki<<t<<" ;"<<y<<" ;"<<v<<'\n';
+        wyniki<<t<<" ;"<<y<<" ;"<<v<<" ;"<<b<<'\n';
         t+=H;
+        //b_increase(b,y);
     }while(y>0);
 wyniki.close();
 return 0;
