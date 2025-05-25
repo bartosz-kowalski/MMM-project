@@ -7,10 +7,7 @@ import subprocess as sb
 import tkinter as tk 
 from tkinter import ttk
 
-#active_cursors = []
-
 def __main__(value: list[str]):
-    #global active_cursors
 
     m = value[0]
     b0 = value[1]
@@ -40,6 +37,7 @@ def __main__(value: list[str]):
     y=[]
     v=[]
     t=[]
+    a=[]
     #b=[]
 
     for i in range(lines-1):
@@ -47,13 +45,14 @@ def __main__(value: list[str]):
         s=s.split(';')
         t.append(float(s[0]))
         y.append(float(s[1]))
-        v.append(abs(float(s[2])))
+        v.append(float(s[2]))
+        a.append(float(s[3]))
         #b.append(float(s[3]))
 
     for widget in plot_frame.winfo_children():
         widget.destroy()
 
-    fig1 = Figure(figsize=(5, 3), dpi=100)
+    fig1 = Figure(figsize=(4, 2), dpi=90)
     ax1 = fig1.add_subplot(111)
     l1, = ax1.plot(t, v, color='blue')
     ax1.set_title("Prędkość ciała spadającego")
@@ -64,14 +63,13 @@ def __main__(value: list[str]):
     @cursor1.connect("add")
     def on_add(sel):
         sel.annotation.set(text=f'Czas: {sel.target[0]:.4f} [s]\n Prędkość ciała: {sel.target[1]:.2f} [m/s]')
-    #active_cursors.append(cursor1)
-
 
     canvas1 = FigureCanvasTkAgg(fig1, master=plot_frame)
     canvas1.draw()
     canvas1.get_tk_widget().pack(side=tk.LEFT,fill=tk.BOTH, expand=True)
 
-    fig2 = Figure(figsize=(5, 3), dpi=100)
+
+    fig2 = Figure(figsize=(4, 2), dpi=90)
     ax2 = fig2.add_subplot(111)
     l2, = ax2.plot(t, y, color='green')
     ax2.set_title("Wysokość ciała spadającego")
@@ -82,11 +80,27 @@ def __main__(value: list[str]):
     @cursor2.connect("add")
     def on_add(sel):
         sel.annotation.set(text=f'Czas: {sel.target[0]:.4f} [s]\n Wysokość ciała: {sel.target[1]:.2f} [m]')
-    #active_cursors.append(cursor2)
 
     canvas2 = FigureCanvasTkAgg(fig2, master=plot_frame)
     canvas2.draw()
     canvas2.get_tk_widget().pack(side=tk.LEFT,fill=tk.BOTH, expand=True)
+
+
+    fig3 = Figure(figsize=(4, 2), dpi=90)
+    ax3 = fig3.add_subplot(111)
+    l3, = ax3.plot(t, a, color='red')
+    ax3.set_title("Przyspieszenie ciała spadającego")
+    ax3.set_xlabel("Czas [s]")
+    ax3.set_ylabel("Przyspieszenie [m/s^2]")
+    ax3.grid(True)
+    cursor3 = mplcursors.cursor(l3, hover=True)
+    @cursor3.connect("add")
+    def on_add(sel):
+        sel.annotation.set(text=f'Czas: {sel.target[0]:.4f} [s]\n Przyspieszenie ciała: {sel.target[1]:.2f} [m/s^2]')
+
+    canvas3 = FigureCanvasTkAgg(fig3, master=plot_frame)
+    canvas3.draw()
+    canvas3.get_tk_widget().pack(side=tk.LEFT,fill=tk.BOTH, expand=True)
 
 def commaCheck():
     m = mentry.get().replace(',', '.')
