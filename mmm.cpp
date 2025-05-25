@@ -66,9 +66,9 @@ int main(int argc, char** argv)
         v+=(k1_v+2*k2_v+2*k3_v+k4_v)/6;
         a=(v-v_old)/H;
         if (y<0) y=0;
-        wyniki<<t<<" ;"<<y<<" ;"<<v<<" ;"<<a<<'\n';//<<" ;"<<b
+        wyniki<<t<<" ;"<<y<<" ;"<<v<<" ;"<<a<<'\n';// <<" ;"<<b
         t+=H;
-        //b_increase(b,y);
+        // b_increase(b,y);
     }while(y>0);
 wyniki.close();
 return 0;
